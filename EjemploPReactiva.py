@@ -4,8 +4,7 @@ from rx import operators as ops
 '''
  A partir de un observable que contiene  una secuencia de tuplas (nombre, edad), retornar hasta aquellas tuplas
  cuyo valor nombre empiece con l, cuya longitud sea mayor o igual a 5 y cuya edad sea menor a 55.
- Presentar las tuplas que cumplan con la condición y si no hay ningún error presentar al final aquellas tuplas en las
- que la edad es mayor a 18
+ Presentar las tuplas que cumplan con la condición y si no hay ningún error presentar al final un mensaje de éxito
 '''
 
 observado = rx.of(("Lucia", 45), ("jorge", 22), ("lana", 82), ("LILIANA", 18), ("Andrea", 14), ("leandro", 45),
@@ -18,9 +17,10 @@ observador = observado.pipe(  # Observador que manipulará las tuplas con .pipe 
     ops.take_while(lambda e: e[1] < 55) # Operador take_while para obtener hasta las tuplas cuya edad sea menor a 55
 )
 
-observador.subscribe( # Suscriptor que permitirá la impresión del observador
+suscriptor = observador.subscribe( # Suscriptor que permitirá la impresión del observador
     on_next=lambda i: print(i), # Impresión de cada tupla filtrada y manipulada
     on_error=lambda e: print("Error: ${e}"), # Impresión en caso de error
-    # Impresión del nro de tuplas con edad mayor a 18 [Falta mejorar]
-    on_completed=lambda: print(f"Nro de elementos con edad mayor a 18: ${observador.pipe(ops.count(lambda e: e[1] >= 18))}")
+    on_completed=lambda: print(f"Datos filtrados con éxito!") # Impresión de éxito
 )
+
+suscriptor.dispose() # Método dispose para terminar la suscripcipon al observable
